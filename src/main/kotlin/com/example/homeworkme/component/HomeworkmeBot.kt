@@ -12,7 +12,7 @@ import javax.annotation.PostConstruct
 
 @Component
 @EnableConfigurationProperties(BotProperties::class)
-class TelegramSender(
+class HomeworkmeBot(
     private val botProperties: BotProperties,
     private val botCommands: List<IBotCommand>,
     private val receiverService: ReceiverService
