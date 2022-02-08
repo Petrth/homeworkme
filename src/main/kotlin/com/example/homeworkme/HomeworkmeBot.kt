@@ -51,7 +51,15 @@ class HomeworkmeBot(
 
     fun buildInlineKeyboardSendMessage(chatId: Long): SendMessage = SendMessage().apply {
         this.chatId = chatId.toString()
-        text = "Привед 5А (тут будет ДЗ...)"
+        text = """
+              09/02/2022
+              Геоерафия: П. 15 ТПО стр. 38-39
+              Математика: 342, 344(2), 352, 353
+              Рус. язык: Нет домашнего задания
+              История: Параграф 35,36 Стр. 170 работа с датами. Стр. 170
+              Физкультура: Лежа на спине поднимая туловище коснуться руками носков
+              Литература: прочитать рассказ И.А. Бунина В деревне
+            """.trimIndent()
         replyMarkup = InlineKeyboardMarkup().apply {
             keyboard = listOf(
                 listOf(
