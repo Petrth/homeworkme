@@ -19,7 +19,8 @@ import javax.annotation.PostConstruct
 class HomeworkmeBot(
     private val botProperties: BotProperties,
     private val botCommands: List<IBotCommand>,
-    private val receiverService: ReceiverService
+    private val receiverService: ReceiverService,
+    private val homework: MutableList<Pair<String, String>>,
 ) : TelegramLongPollingCommandBot() {
     private val log = LoggerFactory.getLogger(HomeworkmeBot::class.java)
 
@@ -51,15 +52,20 @@ class HomeworkmeBot(
 
     fun buildInlineKeyboardSendMessage(chatId: Long): SendMessage = SendMessage().apply {
         this.chatId = chatId.toString()
-        text = """
-              11/02/2022
-              Физкультура: Нет домашнего задания
-              Рус. язык: выполнить 1 вариант ВПР (задания № 1, 7, 8; фонетический слов слова сердце; морфемный разбор слова замирает; морфологический разбор существительных: помещение, (от) догадки; синтаксический разбор предложения: Обычно я надеваю тёплый плащ и шапку.
-              Математика: п.3.2.4., № 419, 420, 427, 436 (по желанию)
-              Естествознание: Решить задачи из прикрепленного документа!
-              Литература: Нет домашнего задания
-              Музыка: Музыка в мультфильме.
-            """.trimIndent()
+//        text = """
+//              11/02/2022
+//              Физкультура: Нет домашнего задания
+//              Рус. язык: выполнить 1 вариант ВПР (задания № 1, 7, 8; фонетический слов слова сердце; морфемный разбор слова замирает; морфологический разбор существительных: помещение, (от) догадки; синтаксический разбор предложения: Обычно я надеваю тёплый плащ и шапку.
+//              Математика: п.3.2.4., № 419, 420, 427, 436 (по желанию)
+//              Естествознание: Решить задачи из прикрепленного документа!
+//              Литература: Нет домашнего задания
+//              Музыка: Музыка в мультфильме.
+//            """.trimIndent()
+
+        text = homework.joinToString(separator = "\n") {
+            "${it.first}: ${it.second}"
+        }
+
         replyMarkup = InlineKeyboardMarkup().apply {
             keyboard = listOf(
                 listOf(

@@ -19,6 +19,8 @@ class BotConfig {
         MyDefaultBotCommand()
     )
 
+    @Bean
+    fun homework(): MutableList<Pair<String, String>> = mutableListOf()
 }
 
 class MyDefaultBotCommand() : DefaultBotCommand(BotCommand.BUTTON.id, BotCommand.BUTTON.desc) {
