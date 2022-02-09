@@ -12,7 +12,7 @@ version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 val telegramBotVersion = "5.3.0"
-//extra["springCloudVersion"] = "2020.0.4"
+extra["springCloudVersion"] = "2021.0.0"
 
 configurations {
     compileOnly {
@@ -24,20 +24,23 @@ repositories {
     mavenCentral()
 }
 
-//dependencyManagement {
-//    imports {
-//        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-//    }
-//}
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
+}
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude("org.junit.vintage:junit-vintage-engine")
+    }
 
     implementation("org.telegram:telegrambots:$telegramBotVersion")
     implementation("org.telegram:telegrambotsextensions:$telegramBotVersion")
