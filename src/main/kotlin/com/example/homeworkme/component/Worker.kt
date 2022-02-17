@@ -15,7 +15,7 @@ class Worker(
     @Scheduled(cron = "\${bot.dnevnikru.cron}")
     fun getHomework() {
         val timestamp = Instant.now().truncatedTo(ChronoUnit.DAYS).toEpochMilli() / 1000
-        val homeworkDay = dnevnikruClient.getHomework(timestamp).firstOrNull()
+        val homeworkDay = dnevnikruClient.getHomework(timestamp).days.firstOrNull()
 
         homeworkDay?.lessons?.map {
             it.subject.name to it.homework.text
