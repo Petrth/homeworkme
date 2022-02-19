@@ -1,6 +1,7 @@
 package com.example.homeworkme
 
 import com.example.homeworkme.properties.BotProperties
+import com.example.homeworkme.service.HomeworkService
 import com.example.homeworkme.service.ReceiverService
 import org.slf4j.LoggerFactory
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -11,6 +12,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
 import javax.annotation.PostConstruct
 
 
@@ -20,7 +23,7 @@ class HomeworkmeBot(
     private val botProperties: BotProperties,
     private val botCommands: List<IBotCommand>,
     private val receiverService: ReceiverService,
-    private val homework: MutableList<Pair<String, String>>,
+    private val homeworkService: HomeworkService,
 ) : TelegramLongPollingCommandBot() {
     private val log = LoggerFactory.getLogger(HomeworkmeBot::class.java)
 
@@ -52,6 +55,18 @@ class HomeworkmeBot(
 
     fun buildInlineKeyboardSendMessage(chatId: Long): SendMessage = SendMessage().apply {
         this.chatId = chatId.toString()
+
+        log.info("prepare homework:")
+        val (instant, days) = homeworkService.getHomework()
+        log.info("format homework, date: {}", instant)
+
+        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val dt = instant.atOffset(ZoneOffset.UTC).toLocalDate().format(formatter)
+        val hw = days.firstOrNull()?.lessons?.joinToString(separator = "\n") {
+            "${it.subject.name}: ${it.homework.text}"
+        }
+
+
 //        text = """
 //              11/02/2022
 //              Физкультура: Нет домашнего задания
@@ -62,9 +77,7 @@ class HomeworkmeBot(
 //              Музыка: Музыка в мультфильме.
 //            """.trimIndent()
 
-        text = homework.joinToString(separator = "\n") {
-            "${it.first}: ${it.second}"
-        }
+        text = "${dt}\n${hw}"
 
         replyMarkup = InlineKeyboardMarkup().apply {
             keyboard = listOf(
